@@ -163,25 +163,29 @@ const checkStockBeforeUpdate = (productId, quantity) => {
   };
 
   const handleBuy = async () => {
-    if (!userId) {
+    if (!userId || !userEmail) {
       alert("User not identified.");
       return;
     }
   
-    // Create a map of productId -> quantity from cart items
+    // Create a map of productId -> quantity
     const productMap = cartItems.reduce((acc, item) => {
       acc[item.productId] = item.quantity;
       return acc;
     }, {});
+
+    console.log("cartitems:",cartItems);
+    console.log("poductMap:",productMap);
   
     try {
-      await ToBuy(userId, productMap);
+      // await ToBuy(userId, userEmail, productMap, cartItems);  
       navigate("/product/buy");
     } catch (error) {
       console.error("Error during purchase:", error);
       alert("Failed to process the purchase.");
     }
   };
+  
 
 
   return (

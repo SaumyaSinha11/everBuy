@@ -1,6 +1,6 @@
 import React from 'react'
 import StockDec from './StockDec'
-import DirectOrder from './DirectOrder'
+import {DirectOrder} from './DirectOrder'
 
 
 
