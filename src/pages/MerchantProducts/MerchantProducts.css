@@ -1,0 +1,180 @@
+.merchant-products {
+  padding: 20px;
+}
+
+.merchant-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-product-btn {
+  background-color: #f7b500;
+  padding: 8px 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+}
+
+.product-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.product-card {
+  width: calc(20% - 10px);
+  border: 1px solid black;
+  text-align: center;
+  position: relative;
+}
+
+.product-image {
+  width: 100%;
+  max-height: 178px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.product-info {
+  background-color: #f7b500;
+  padding: 10px;
+}
+
+.product-name {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.product-brand {
+  font-size: 12px;
+  color: #555;
+}
+
+.product-price {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.product-rating {
+  font-size: 14px;
+  color: black;
+}
+
+
+.add-product-form {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.add-product-form input,
+.add-product-form textarea {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.add-product-form button {
+  background-color: #f7b500;
+  padding: 8px 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+}
+
+.cancel-btn {
+  background-color: #ccc;
+  margin-left: 10px;
+}
+
+.buttonsDiv{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+
+.edit-product-form {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.edit-product-form input,
+.edit-product-form textarea {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.edit-product-form button {
+  background-color: #f7b500;
+  padding: 8px 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+
+}
+
+.edit-product-form .cancel-btn {
+  background-color: #ccc;
+  margin-left: 10px;
+}
+
+
+
+.delete {
+  padding: 8px 16px;
+  background-color: #f44336;  /* Red background */
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+/* Change color on hover */
+.delete:hover {
+  background-color: #d32f2f;
+}
+
+
+.delete:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.5);
+}
+
+
+.edit {
+  padding: 8px 16px;
+  background-color: #0373fc;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+
+
+.edit:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
+}
+
+
