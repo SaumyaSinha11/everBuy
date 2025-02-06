@@ -50,15 +50,11 @@ const SingleProduct = () => {
   
       console.log("User ID:", userId);
 
-  
-      // Call ToBuy function with productId, quantity, and userId
       const productMap = {
-        [productId]: quantity  // Use the productId as the key, and quantity as the value
+        [productId]: quantity  
       };
       const productDetails = [product];
-      ToBuy(productId, quantity, userId , productMap);
-  
-      navigate("/product/buy");
+
     }
   
     console.log("atBuy:", productId, quantity);
