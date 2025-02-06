@@ -3,13 +3,15 @@ import React, { useState, useEffect } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import "./SingleProduct.css";
 import { useUser } from "../../App";
+import ToBuy from "../../Components/BuyNow/ToBuy";
 
 const SingleProduct = () => {
   const { productId } = useParams(); // Get the product ID from the URL
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [quantity, setQuantity] = useState(1); // State for quantity
+  const [quantity, setQuantity] = useState(1); 
+
 
   const abhishekIp = "10.65.1.185";
   const productPort="8095";
@@ -20,11 +22,42 @@ const SingleProduct = () => {
 
   const navigate = useNavigate()
   const {login} = useUser();
+  
 
-  const handleBuy = () =>{
-    if(!login){navigate("/user")}
-    else{navigate("/product/buy")}
-  }
+  const handleBuy = async () => {
+    if (!login) {
+      navigate("/user");
+    } else {
+      // Retrieve session data
+      const sessionData = sessionStorage.getItem("user");
+  
+      if (!sessionData) {
+        console.error("No user data found in session storage.");
+        return;
+      }
+  
+      // Parse session data
+      const user = JSON.parse(sessionData);
+      const email = user.email;
+  
+      // Fetch user ID
+      const userId = await fetchUserId(email, saumyaIp, userPort);
+  
+      if (!userId) {
+        console.error("User ID could not be fetched.");
+        return;
+      }
+  
+      console.log("User ID:", userId);
+  
+      // Call ToBuy function with productId, quantity, and userId
+      ToBuy(productId, quantity, userId);
+  
+      navigate("/product/buy");
+    }
+  
+    console.log("atBuy:", productId, quantity);
+  };
 
     // Handle quantity increase
   const increaseQuantity = () => {
@@ -141,6 +174,7 @@ const SingleProduct = () => {
 
         const data = await response.json();
         setProduct(data); 
+        console.log()
         setLoading(false);  
       } catch (error) {
         console.error("Error fetching product details:", error);

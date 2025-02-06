@@ -1,18 +1,20 @@
 const StockDec = async (productId, quantity) => {
-
     const abhishekIp = "10.65.1.185";
-    const productPort="8095";
-    
+    const productPort = "8095";
+    console.log("AtStock:", productId, quantity);
+
     try {
-        const response = await fetch("http://your-api-url/decrease-stock", {
-            method: "POST",
+        const response = await fetch(`http://${abhishekIp}:${productPort}/products/decStock/${productId}/${quantity}`, {
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ productId, quantity }),
         });
 
+        // Log the response status and body for debugging
         if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Error response from server:", errorData);
             throw new Error("Failed to update stock");
         }
 
