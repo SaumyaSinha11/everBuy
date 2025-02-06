@@ -40,7 +40,7 @@ const SingleProduct = () => {
     }
   };
 
-  const addItemToCart = async (userId, productId, quantity = 1) => {
+  const addItemToCart = async (userId, productId, quantity) => {
     try {
       const response = await fetch(`http://${saumyaIp}:${userPort}/user/cart`, {
         method: "POST",
@@ -121,14 +121,13 @@ const SingleProduct = () => {
   
       console.log("User ID:", userId);
 
-      await addItemToCart(userId, productId);
+      await addItemToCart(userId, productId , quantity);
       
 
     } catch (error) {
       console.error("Error in AddToCart:", error);
     }
   };
-  
   
 
   useEffect(() => {
@@ -141,11 +140,11 @@ const SingleProduct = () => {
         }
 
         const data = await response.json();
-        setProduct(data);  // Set product data
-        setLoading(false);  // Set loading to false after data is fetched
+        setProduct(data); 
+        setLoading(false);  
       } catch (error) {
         console.error("Error fetching product details:", error);
-        setError("We are experiencing technical difficulties. Please try again later.");  // Error message
+        setError("We are experiencing technical difficulties. Please try again later.");  
         setLoading(false);  // Stop loading even if there's an error
       }
     };
@@ -155,9 +154,9 @@ const SingleProduct = () => {
 
   if (loading && !error) return <div>Loading product details...</div>;
 
-  if (error) return <div className="error-message">{error}</div>; // Show error message if there's an error
+  if (error) return <div className="error-message">{error}</div>;
 
-  if (!product) return <div>Product not found</div>; // If no product is found
+  if (!product) return <div>Product not found</div>; 
 
   return (
     <div>
