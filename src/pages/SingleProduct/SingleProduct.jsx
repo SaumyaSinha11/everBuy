@@ -1,24 +1,32 @@
+
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import "./SingleProduct.css";
 import { useUser } from "../../App";
 
 const SingleProduct = () => {
-  const { productId } = useParams();
+  const { productId } = useParams(); // Get the product ID from the URL
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [quantity, setQuantity] = useState(1); // State for quantity
   const [error, setError] = useState(null);
+  const [quantity, setQuantity] = useState(1); // State for quantity
 
   const abhishekIp = "10.65.1.185";
-  const productPort = "8095";
-  const saumyaIp = "10.65.1.76";
+  const productPort="8095";
+
+  const saumyaIp="10.65.1.76";
   const userPort = "8080";
+  const cartPort ="8081";
 
-  const navigate = useNavigate();
-  const { login } = useUser();
+  const navigate = useNavigate()
+  const {login} = useUser();
 
-  // Handle quantity increase
+  const handleBuy = () =>{
+    if(!login){navigate("/user")}
+    else{navigate("/product/buy")}
+  }
+
+    // Handle quantity increase
   const increaseQuantity = () => {
     if (quantity < product.stock) {
       setQuantity(quantity + 1);
@@ -30,17 +38,6 @@ const SingleProduct = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
     }
-  };
-
-  const handleBuy = () => {
-    if (!login) {
-      navigate("/user");
-    } else {
-      navigate("/product/buy");
-    }
-   
-    
-
   };
 
   const addItemToCart = async (userId, productId, quantity = 1) => {
@@ -62,6 +59,7 @@ const SingleProduct = () => {
       }
 
       const result = await response.json();
+      console.log("Item added to cart successfully:", result);
       alert("Item added to cart successfully!");
     } catch (error) {
       console.error("Error adding item to cart:", error);
@@ -69,31 +67,97 @@ const SingleProduct = () => {
     }
   };
 
-  const fetchProduct = async () => {
+  const fetchUserId = async (email, saumyaIp, userPort) => {
     try {
-      const response = await fetch(`http://${abhishekIp}:${productPort}/products/product/${productId}`);
-
+      const response = await fetch(`http://${saumyaIp}:${userPort}/user/id/${email}`);
+  
       if (!response.ok) {
-        throw new Error("Product not found");
+        throw new Error("Failed to fetch user ID");
       }
-
-      const data = await response.json();
-      setProduct(data);
-      setLoading(false);
+  
+      const userId = await response.json();
+      
+      const sessionData = sessionStorage.getItem("user");
+    
+      if (sessionData) {
+        const user = JSON.parse(sessionData);
+        // Add the userId to the user data
+        user.userId = userId;
+        
+        // Update sessionStorage with the new user data
+        sessionStorage.setItem("user", JSON.stringify(user));
+      }
+      
+      return userId; // Returning the user ID
     } catch (error) {
-      setError("We are experiencing technical difficulties. Please try again later.");
-      setLoading(false);
+      console.error("Error fetching user ID:", error);
+      return null;
     }
   };
+  
+  const AddToCart = async () => {
+    try {
+      // Retrieve session data
+      const sessionData = sessionStorage.getItem("user");
+  
+      if (!sessionData) {
+        console.error("No user data found in session storage.");
+        return;
+      }
+  
+      // Parse session data
+      const user = JSON.parse(sessionData);
+      const email = user.email;
+  
+      console.log("User Email:", email);
+  
+      // Fetch user ID
+      const userId = await fetchUserId(email, saumyaIp, userPort);
+  
+      if (!userId) {
+        console.error("User ID could not be fetched.");
+        return;
+      }
+  
+      console.log("User ID:", userId);
+
+      await addItemToCart(userId, productId);
+      
+
+    } catch (error) {
+      console.error("Error in AddToCart:", error);
+    }
+  };
+  
+  
 
   useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`http://${abhishekIp}:${productPort}/products/product/${productId}`);
+
+        if (!response.ok) {
+          throw new Error("Product not found");
+        }
+
+        const data = await response.json();
+        setProduct(data);  // Set product data
+        setLoading(false);  // Set loading to false after data is fetched
+      } catch (error) {
+        console.error("Error fetching product details:", error);
+        setError("We are experiencing technical difficulties. Please try again later.");  // Error message
+        setLoading(false);  // Stop loading even if there's an error
+      }
+    };
+
     fetchProduct();
   }, [productId]);
 
   if (loading && !error) return <div>Loading product details...</div>;
-  if (error) return <div className="error-message">{error}</div>;
 
-  if (!product) return <div>Product not found</div>;
+  if (error) return <div className="error-message">{error}</div>; // Show error message if there's an error
+
+  if (!product) return <div>Product not found</div>; // If no product is found
 
   return (
     <div>
@@ -109,22 +173,34 @@ const SingleProduct = () => {
           <p><strong>Rating:</strong> ⭐ {product.rating}/5</p>
           <p><strong>Stock:</strong> {product.stock} available</p>
           <div className="quantity-controls">
-            <button className="quantity-btn" onClick={decreaseQuantity}>-</button>
+             <button className="quantity-btn" onClick={decreaseQuantity}>-</button>
             <span className="quantity">{quantity}</span>
-            <button className="quantity-btn" onClick={increaseQuantity}>+</button>
+             <button className="quantity-btn" onClick={increaseQuantity}>+</button>
           </div>
           <div className="button-sin-pro">
-            <button className="add-to-cart-btn" onClick={handleBuy}>Buy Now</button>
-            <button className="add-to-cart-btn" onClick={() => addItemToCart(product.id, quantity)}>Add to Cart</button>
+          <button className="add-to-cart-btn" 
+          onClick={()=>{
+            AddToCart();
+          }}
+          >Add to Cart</button>
+          <button className="add-to-cart-btn" onClick={handleBuy}>Buy Now</button>
           </div>
         </div>
       </div>
+
       <div className="product-description">
         <h3>Description</h3>
-        <p>{product.description}</p>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est habitasse. Suspendisse enim molestie duis lacinia; interdum ante posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui parturient.
+          orem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est habiorem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est habiorem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est habiorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est habitasse. Suspendisse enim molestie duis lacinia; interdum ante posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui parturient.
+         orem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est habitasse. Suspendisse enim molestie duis lacinia; interdum ante posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui parturient.
+         orem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est habitasse. Suspendisse enim molestie duis lacinia; interdum ante posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui parturient.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                orem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est habitasse. Suspendisse enim molestie duis lacinia; interdum ante posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui parturient.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               orem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est habitasse. Suspendisse enim molestie duis lacinia; interdum ante posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui parturient.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       orem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est habitasse. Suspendisse enim molestie duis lacinia; interdum ante posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui parturient.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          orem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat,  Inceptos sociosqu sodales erat, nam est habi
+        </p>
       </div>
     </div>
   );
 };
 
 export default SingleProduct;
+
+
