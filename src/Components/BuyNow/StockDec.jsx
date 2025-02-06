@@ -60,6 +60,15 @@ const StockDec = async (productMap) => {
         console.log("Stock updated successfully for all products.");
         alert("Stock decreased successfully!");
 
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Error response from server:", errorData);
+            throw new Error("Failed to update stock");
+        }
+
+        const data = await response.json();
+        console.log("Stock updated:", data);
+        // alert("Stock decreased successfully!");
     } catch (error) {
         console.error("Error updating stock:", error);
         alert("Failed to update stock.");

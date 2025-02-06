@@ -28,15 +28,13 @@ const SingleProduct = () => {
     if (!login) {
       navigate("/user");
     } else {
-      // Retrieve session data
       const sessionData = sessionStorage.getItem("user");
   
       if (!sessionData) {
         console.error("No user data found in session storage.");
         return;
       }
-  
-      // Parse session data
+
       const user = JSON.parse(sessionData);
       const email = user.email;
   
@@ -54,6 +52,7 @@ const SingleProduct = () => {
         [productId]: quantity  
       };
       const productDetails = [product];
+
 
     }
   
