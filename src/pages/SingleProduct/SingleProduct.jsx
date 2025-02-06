@@ -48,11 +48,16 @@ const SingleProduct = () => {
   
       console.log("User ID:", userId);
 
+      // ToBuy(productId, quantity, userId);
+  
+      navigate("/product/buy", {
+        state:{productId, quantity, userId},
+      });
+
       const productMap = {
         [productId]: quantity  
       };
       const productDetails = [product];
-
 
     }
   
@@ -129,6 +134,7 @@ const SingleProduct = () => {
   };
   
   const AddToCart = async () => {
+    if (!login) navigate("/user");
     try {
       // Retrieve session data
       const sessionData = sessionStorage.getItem("user");
