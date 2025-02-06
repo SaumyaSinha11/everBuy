@@ -22,7 +22,7 @@ const SingleProduct = () => {
 
   const navigate = useNavigate()
   const {login} = useUser();
-  
+
 
   const handleBuy = async () => {
     if (!login) {
@@ -49,9 +49,14 @@ const SingleProduct = () => {
       }
   
       console.log("User ID:", userId);
+
   
       // Call ToBuy function with productId, quantity, and userId
-      ToBuy(productId, quantity, userId);
+      const productMap = {
+        [productId]: quantity  // Use the productId as the key, and quantity as the value
+      };
+      const productDetails = [product];
+      ToBuy(productId, quantity, userId , productMap);
   
       navigate("/product/buy");
     }
