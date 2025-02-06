@@ -54,3 +54,32 @@ flex-direction: column;
   flex-flow:row;
   gap:2rem;
 }
+
+/* Styling for the quantity controls section */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.quantity-btn {
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 40px; /* Make the buttons consistent in size */
+  text-align: center;
+}
+
+.quantity-btn:hover {
+  background-color: #ccc;
+}
+
+.quantity {
+  font-size: 18px;
+  margin: 0 10px;
+  font-weight: bold;
+}
