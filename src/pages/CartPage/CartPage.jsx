@@ -5,6 +5,7 @@ import { Box, Container, Grid, Typography, Button, Card, CardContent, Stack, Cir
 import { FiShoppingCart } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import CartItem from "../../Components/Cart/Card";
+import ToBuy from "../../Components/BuyNow/ToBuy";
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -162,24 +163,30 @@ const checkStockBeforeUpdate = (productId, quantity) => {
     navigate(-1);
   };
 
+
   const handleBuy = async () => {
     if (!userId || !userEmail) {
       alert("User not identified.");
       return;
     }
-  
     // Create a map of productId -> quantity
     const productMap = cartItems.reduce((acc, item) => {
       acc[item.productId] = item.quantity;
       return acc;
     }, {});
 
+    console.log("email:",userEmail);
+    console.log("userId",userId);
+
     console.log("cartitems:",cartItems);
     console.log("poductMap:",productMap);
   
     try {
-      // await ToBuy(userId, userEmail, productMap, cartItems);  
-      navigate("/product/buy");
+      // navigate("/product/buy", {
+      //   state:{email,userId, productMap, productDetails},
+      // });
+
+      ToBuy(userEmail ,userId ,productMap,cartItems);
     } catch (error) {
       console.error("Error during purchase:", error);
       alert("Failed to process the purchase.");

@@ -1,18 +1,18 @@
 
-const sendEmail = async (productDetails, email) => {
+ const sendEmail = async (productDetails, email) => {
   try {
-    // Define the server endpoint for sending email
-    const serverIp = "10.65.1.76";  // Replace with your server's IP
-    const serverPort = "8082"; // Replace with your email service API port
 
-    const response = await fetch(`http://${serverIp}:${serverPort}/sendEmail`, {
+    const saumyaIp = "10.65.1.76"; 
+    const userPort = "8080"; 
+   console.log("email in sendEmail fun:",email);
+   console.log("proDetails in sendEmailfun:",productDetails);
+    const response = await fetch(`http://${saumyaIp}:${userPort}/user/order/${email}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email: email,
-        products: productDetails,  // Pass the array of product details here
+        products: productDetails, 
       }),
     });
 
@@ -28,3 +28,5 @@ const sendEmail = async (productDetails, email) => {
     alert("Failed to send email.");
   }
 };
+
+export default sendEmail;

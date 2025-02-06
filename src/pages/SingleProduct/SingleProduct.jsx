@@ -25,6 +25,8 @@ const SingleProduct = () => {
 
 
   const handleBuy = async () => {
+    console.log("click on buynow");
+  
     if (!login) {
       navigate("/user");
     } else {
@@ -34,7 +36,7 @@ const SingleProduct = () => {
         console.error("No user data found in session storage.");
         return;
       }
-
+  
       const user = JSON.parse(sessionData);
       const email = user.email;
   
@@ -47,22 +49,29 @@ const SingleProduct = () => {
       }
   
       console.log("User ID:", userId);
-
-      // ToBuy(productId, quantity, userId);
   
-      navigate("/product/buy", {
-        state:{productId, quantity, userId},
-      });
-
+      // Prepare productMap and productDetails with quantity and productId
       const productMap = {
-        [productId]: quantity  
+        [productId]: quantity
       };
-      const productDetails = [product];
-
-    }
   
-    console.log("atBuy:", productId, quantity);
+      // Include productId, quantity, productName, price, and totalPrice in productDetails
+      const productDetails = [{
+        productId: productId,            // Include the productId (PID)
+        productName: product.name,       // Assuming the product name is in product.name
+        price: product.price,            // Assuming the price is in product.price
+        totalPrice: product.price * quantity, // Calculating totalPrice as price * quantity
+        quantity: quantity               // Including quantity in the product details
+      }];
+      
+      console.log("productDetails", productDetails);
+      console.log("productMap:", productMap);
+  
+      // Call ToBuy function to send the email and order details
+      ToBuy(email, userId, productMap, productDetails, 1);
+    }
   };
+  
 
     // Handle quantity increase
   const increaseQuantity = () => {
@@ -180,12 +189,12 @@ const SingleProduct = () => {
 
         const data = await response.json();
         setProduct(data); 
-        console.log()
+        console.log(data);
         setLoading(false);  
       } catch (error) {
         console.error("Error fetching product details:", error);
         setError("We are experiencing technical difficulties. Please try again later.");  
-        setLoading(false);  // Stop loading even if there's an error
+        setLoading(false); 
       }
     };
 
