@@ -52,7 +52,7 @@ export default function Buy() {
     });
 
     const validateName = (name) => {
-        if (/^[0-9\x41-\x7A\u00C0-\uD7FB\ \']+([\-])*[.]{0,1}$/.test(name) && name.length < 150 && name.length != 0) return true;
+        if (/^[a-zA-Z0-9\s,.-]{3,100}$/.test(name) && name.length < 150 && name.length != 0) return true;
         return false;
     };
 

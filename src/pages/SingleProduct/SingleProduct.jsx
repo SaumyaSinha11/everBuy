@@ -28,19 +28,16 @@ const SingleProduct = () => {
     if (!login) {
       navigate("/user");
     } else {
-      // Retrieve session data
       const sessionData = sessionStorage.getItem("user");
   
       if (!sessionData) {
         console.error("No user data found in session storage.");
         return;
       }
-  
-      // Parse session data
+
       const user = JSON.parse(sessionData);
       const email = user.email;
   
-      // Fetch user ID
       const userId = await fetchUserId(email, saumyaIp, userPort);
   
       if (!userId) {
@@ -50,7 +47,6 @@ const SingleProduct = () => {
   
       console.log("User ID:", userId);
   
-      // Call ToBuy function with productId, quantity, and userId
       ToBuy(productId, quantity, userId);
   
       navigate("/product/buy");

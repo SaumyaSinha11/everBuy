@@ -11,7 +11,6 @@ const StockDec = async (productId, quantity) => {
             },
         });
 
-        // Log the response status and body for debugging
         if (!response.ok) {
             const errorData = await response.json();
             console.error("Error response from server:", errorData);
@@ -20,7 +19,7 @@ const StockDec = async (productId, quantity) => {
 
         const data = await response.json();
         console.log("Stock updated:", data);
-        alert("Stock decreased successfully!");
+        // alert("Stock decreased successfully!");
     } catch (error) {
         console.error("Error:", error);
         alert("Failed to update stock.");
