@@ -162,6 +162,28 @@ const checkStockBeforeUpdate = (productId, quantity) => {
     navigate(-1);
   };
 
+  const handleBuy = async () => {
+    if (!userId) {
+      alert("User not identified.");
+      return;
+    }
+  
+    // Create a map of productId -> quantity from cart items
+    const productMap = cartItems.reduce((acc, item) => {
+      acc[item.productId] = item.quantity;
+      return acc;
+    }, {});
+  
+    try {
+      await ToBuy(userId, productMap);
+      navigate("/product/buy");
+    } catch (error) {
+      console.error("Error during purchase:", error);
+      alert("Failed to process the purchase.");
+    }
+  };
+
+
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
@@ -205,7 +227,7 @@ const checkStockBeforeUpdate = (productId, quantity) => {
                   </Typography>
                 </Box>
                 <Stack spacing={2}>
-                  <Button variant="contained" size="large" startIcon={<FiShoppingCart />}>
+                  <Button variant="contained" size="large" startIcon={<FiShoppingCart />} onClick={handleBuy}>
                     Buy Now
                   </Button>
                   <Button variant="outlined" size="large" onClick={handleContinueShopping}>

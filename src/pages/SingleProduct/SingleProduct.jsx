@@ -22,7 +22,7 @@ const SingleProduct = () => {
 
   const navigate = useNavigate()
   const {login} = useUser();
-  
+
 
   const handleBuy = async () => {
     if (!login) {
@@ -38,6 +38,7 @@ const SingleProduct = () => {
       const user = JSON.parse(sessionData);
       const email = user.email;
   
+      // Fetch user ID
       const userId = await fetchUserId(email, saumyaIp, userPort);
   
       if (!userId) {
@@ -46,12 +47,18 @@ const SingleProduct = () => {
       }
   
       console.log("User ID:", userId);
-  
+
       // ToBuy(productId, quantity, userId);
   
       navigate("/product/buy", {
         state:{productId, quantity, userId},
       });
+
+      const productMap = {
+        [productId]: quantity  
+      };
+      const productDetails = [product];
+
     }
   
     console.log("atBuy:", productId, quantity);
