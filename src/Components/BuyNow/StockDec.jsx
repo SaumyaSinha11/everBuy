@@ -31,6 +31,7 @@
 
 
 const StockDec = async (productMap) => {
+    console.log("StockDec function called");
     const abhishekIp = "10.65.1.185";
     const productPort = "8095";
 

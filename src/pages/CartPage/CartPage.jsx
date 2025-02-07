@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import { Box, Container, Grid, Typography, Button, Card, CardContent, Stack, CircularProgress } from "@mui/material";
 import { FiShoppingCart } from "react-icons/fi";
@@ -178,7 +176,7 @@ const checkStockBeforeUpdate = (productId, quantity) => {
     console.log("poductMap:",productMap);
   
     try {
-      // await ToBuy(userId, userEmail, productMap, cartItems);  
+      await ToBuy(userId, userEmail, productMap, cartItems , 2);
       navigate("/product/buy");
     } catch (error) {
       console.error("Error during purchase:", error);

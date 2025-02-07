@@ -4,11 +4,10 @@ import {DirectOrder} from './DirectOrder'
 
 
 
-const ToBuy = (productId , quantity, cid, aid, orders) => {
-    StockDec(productId , quantity);
-
-    DirectOrder(cid,aid,orders);
-
+const ToBuy  = (userId,email,productMap,productDetails, Aid) => {
+//     StockDec(productId , quantity);
+   console.log("TO buy");
+    DirectOrder(userId,Aid,productMap);
 }
 
 export default ToBuy;

@@ -25,6 +25,7 @@ const SingleProduct = () => {
 
 
   const handleBuy = async () => {
+      console.log("Buy Now button clicked");
     if (!login) {
       navigate("/user");
     } else {
@@ -47,18 +48,23 @@ const SingleProduct = () => {
       }
   
       console.log("User ID:", userId);
+          console.log("Product ID:", productId);  // Check if this is the correct product ID
+          console.log("Quantity:", quantity);
 
       // ToBuy(productId, quantity, userId);
   
-      navigate("/product/buy", {
-        state:{productId, quantity, userId},
-      });
 
-      const productMap = {
-        [productId]: quantity  
-      };
+
+     const productMap = [{
+           pid: productId,
+           quantity: quantity
+         }];
+  console.log("Product map:", productMap);
       const productDetails = [product];
-
+      ToBuy(userId,email,productMap,productDetails,3);
+      navigate("/product/buy", {
+              state:{productId, quantity, userId},
+            });
     }
   
     console.log("atBuy:", productId, quantity);
