@@ -14,11 +14,15 @@ const StyledCard = styled(Card)(({ theme }) => ({
 export default function Buy() {
      const navigate = useNavigate();
 
-    const saumyaIp = "10.65.1.76";
-    const userPort = "8080";
+     const saumyaIp = "10.65.1.76";
+  const userPort = "8080";
+  const cartPort = "8081";
+  const abhishekIp = "10.65.1.185";
+  const productPort = "8095";
+
 
     const location = useLocation();
-    const { userId, userEmail, productMap, productDetails } = location.state || {};
+    const { userId, userEmail, productMap, productDetails ,cartIdList} = location.state || {};
 
     const [formData, setFormData] = useState({
         homeName: "",
@@ -110,9 +114,8 @@ export default function Buy() {
             if (response.ok) {
                 const responseData = await response.json();
                 console.log("email just before sending :",userEmail);
-                
+                 console.log("productDetails",productDetails);
                 stockDec(productMap, responseData);
-                // await ToBuy(userId, userEmail, productMap, productDetails, responseData);
             } else {
                 alert("Failed to place order. Try again later.");
             }
@@ -193,6 +196,7 @@ export default function Buy() {
     };
 
     const sendEmail = async (email) => {
+    
         try {
       
           const saumyaIp = "10.65.1.76"; 
@@ -246,11 +250,16 @@ export default function Buy() {
                     );
     
                     if (!response.ok) {
-                        alert('Product is out of stock !!!!!!!!!');
-                        throw new Error(`Stock update failed for product ${pid}`);
-                    }else{
-                        directOrder(userId, addressAid,productMap);
-                        sendEmail(userEmail);    
+                      alert("Product is out of stock !!!!!!!!!");
+                      throw new Error(`Stock update failed for product ${pid}`);
+                    } else {
+                      directOrder(userId, addressAid, productMap);
+
+                      for (const item of cartIdList) {
+                        await removeItem(item.cartId);
+                      }
+
+                      sendEmail(userEmail);
                     }
 
                 })
@@ -263,7 +272,29 @@ export default function Buy() {
             alert("Failed to update stock.");
         }
     };
-
+    
+    const removeItem = async (cartId) => {
+        try {
+          const response = await fetch(
+            `http://${saumyaIp}:${cartPort}/user/cart/${cartId}`,
+            {
+              method: "DELETE",
+            }
+          );
+    
+          if (response.ok) {
+            // Remove the deleted item from the cartItems state
+            // setCartItems((prevItems) =>
+            //   prevItems.filter((item) => item.cartId !== cartId)
+            // );
+          } else {
+            console.error("Failed to delete item from the cart");
+          }
+        } catch (error) {
+          console.error("Error deleting item from the cart:", error);
+        }
+      };
+    
 
     const handleDataChange = useCallback((field) => (e) => {
         setFormData((prev) => ({

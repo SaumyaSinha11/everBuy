@@ -94,6 +94,7 @@ const CartPage = () => {
               cartItem.productId
             );
             console.log(productDetails);
+            console.log("cartItems",cartItems);
             return { ...cartItem, ...productDetails };
           })
         );
@@ -216,10 +217,11 @@ const CartPage = () => {
       quantity: item.quantity,
     }));
 
+    const cartIdList = cartItems.map((item) => ({
+       cartId:item.cartId,
+    }));
 
-     const cartIdArray = cartItems.map((item))
-
-
+ 
     console.log("Email:", userEmail);
     console.log("UserId:", userId);
     console.log("Product Map:", productMap);
@@ -231,7 +233,7 @@ const CartPage = () => {
       console.log("email of user:",userEmail);
       console.log("Navigating with state:", { userId, userEmail, productMap, productDetails });
       navigate("/product/buy", {
-        state:{userId,userEmail ,productMap, cartItems , },
+        state:{userId,userEmail ,productMap, productDetails ,cartIdList },
       });
 
 
