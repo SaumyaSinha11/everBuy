@@ -29,8 +29,12 @@
 //       }
 //   };
 
+import StockDec from './StockDec';
+
 
 const DirectOrder = async (cid, aid, orderItems) => {
+    console.log("DirectOrder function called");
+      console.log("Order Items:", orderItems);
     const abhishekIp = "10.65.1.185";
       const productPort="8095";
     // Check if the orderItems array is valid
@@ -39,19 +43,19 @@ const DirectOrder = async (cid, aid, orderItems) => {
         alert("Invalid order details.");
         return;
     }
-
-
     try {
         for (let item of orderItems) {
             // Fetch the merchant ID from the ProductService microservice
-            const midResponse = await fetch(`http://${abhishekIp}:${productPort}/getmidFrompid/{item.pid}`);
+            console.log("Item:", item);
+            const midResponse = await fetch(`http://localhost:8095/getmidFrompid/${item.pid}`);
+//             const midResponse = await fetch(`http://localhost:8095/getmidFrompid/{item.pid}`);
             if (!midResponse.ok) {
                 throw new Error(`Failed to retrieve merchant ID for product ID: ${item.pid}`);
             }
             const mid = await midResponse.json(); // Extract the MID from the response
 
             // Proceed to create the direct order with the retrieved MID
-            const orderResponse = await fetch('http://localhost:8098/orders/direct', {
+            const orderResponse = await fetch('http://localhost:8098/direct', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -71,13 +75,15 @@ const DirectOrder = async (cid, aid, orderItems) => {
 
             // If desired, process the response from creating the order.
             const orderResult = await orderResponse.json();
+            StockDec(productId , quantity);
             console.log("Direct order created successfully:", orderResult);
+
         }
 
         // Notify the user after all orders are created
         alert("All orders created successfully.");
     } catch (error) {
-        console.error("Error creating direct orders:", error);
+//         console.error("Error creating direct orders:", error);
         alert("An error occurred while creating orders. Please try again.");
     }
 };
