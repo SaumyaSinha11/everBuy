@@ -3,9 +3,10 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import "./SingleProduct.css";
 import { useUser } from "../../App";
 import ToBuy from "../../Components/BuyNow/ToBuy";
+import MerchantList from "./MerchantList";
 
 const SingleProduct = () => {
-  const { productId } = useParams(); // Get the product ID from the URL
+  const { productId } = useParams(); 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -427,6 +428,7 @@ const SingleProduct = () => {
           est habi
         </p>
       </div>
+      <MerchantList/>
     </div>
   );
 };

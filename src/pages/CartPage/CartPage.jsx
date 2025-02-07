@@ -208,7 +208,6 @@ const CartPage = () => {
       quantity: item.quantity,
     }));
 
-    // Correct productDetails format
     const productDetails = cartItems.map((item) => ({
       productId: item.productId,
       productName: item.name,
@@ -217,18 +216,22 @@ const CartPage = () => {
       quantity: item.quantity,
     }));
 
+
+     const cartIdArray = cartItems.map((item))
+
+
     console.log("Email:", userEmail);
     console.log("UserId:", userId);
     console.log("Product Map:", productMap);
     console.log("Product Details:", productDetails);
     try {
-      for (const item of cartItems) {
-        await removeItem(item.cartId); 
-      }
+      // for (const item of cartItems) {
+      //   await removeItem(item.cartId); 
+      // }
       console.log("email of user:",userEmail);
       console.log("Navigating with state:", { userId, userEmail, productMap, productDetails });
       navigate("/product/buy", {
-        state:{userId,userEmail ,productMap, productDetails},
+        state:{userId,userEmail ,productMap, cartItems , },
       });
 
 

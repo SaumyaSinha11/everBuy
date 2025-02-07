@@ -45,7 +45,7 @@ const TrendingProducts = () => {
     <div className="trending-section">
       <div className="trending-header">
         <h2>TRENDING NOW</h2>
-        <button className="view-all-btn">VIEW ALL</button>
+        {/* <button className="view-all-btn">VIEW ALL</button> */}
       </div>
 
       {loading && !error ? (

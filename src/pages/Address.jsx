@@ -110,15 +110,157 @@ export default function Buy() {
             if (response.ok) {
                 const responseData = await response.json();
                 console.log("email just before sending :",userEmail);
-                await ToBuy(userId, userEmail, productMap, productDetails, responseData);
-                alert("Order placed successfully! Check your email.");
-                navigate('/order');
+                
+                stockDec(productMap, responseData);
+                // await ToBuy(userId, userEmail, productMap, productDetails, responseData);
             } else {
                 alert("Failed to place order. Try again later.");
             }
 
         } catch (error) {
             console.log("Error in fetching data:", error);
+        }
+    };
+
+
+    const directOrder = async (cid, aid, orderItems) => {
+        const abhishekIp = "10.65.1.185";
+        const productPort = "8095";
+        const orderPort = "8098";
+    
+        console.log("DirectOrder function called");
+        console.log("Order Items:", orderItems);
+        console.log("Customer ID (cid):", cid);
+        console.log("Address ID (aid):", aid);
+    
+        if (!Array.isArray(orderItems) || orderItems.length === 0) {
+            alert("Invalid order details.");
+            return;
+        }
+    
+        try {
+            for (let item of orderItems) {
+                console.log("Processing item:", item);
+    
+                // Fetch Merchant ID for the product
+                let mid;
+                try {
+                    const midResponse = await fetch(`http://${abhishekIp}:${productPort}/getmidFrompid/${item.pid}`);
+                    if (!midResponse.ok) {
+                        const errorText = await midResponse.text();
+                        throw new Error(`Failed to retrieve merchant ID for product ${item.pid}: ${errorText}`);
+                    }
+                    const midData = await midResponse.json();
+                    mid = midData.mid || midData; // Ensure correct extraction
+                } catch (error) {
+                    console.error(error.message);
+                    continue; // Skip this product and proceed with others
+                }
+    
+                // Proceed with order creation
+                try {
+                    const orderResponse = await fetch(`http://${abhishekIp}:${orderPort}/direct`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            cid: cid,
+                            pid: item.pid,
+                            quantity: item.quantity,
+                            mid: mid,
+                            aid: aid,
+                        }),
+                    });
+    
+                    if (!orderResponse.ok) {
+                        const errorText = await orderResponse.text();
+                        throw new Error(`Failed to create order for ${item.pid}: ${errorText}`);
+                    }
+    
+                    const orderResult = await orderResponse.json();
+                    console.log("Order created successfully:", orderResult);
+    
+    
+                } catch (orderError) {
+                    console.error(orderError.message);
+                }
+            }
+    
+            // alert("All orders processed successfully.");
+        } catch (error) {
+            alert("An unexpected error occurred while creating orders.");
+            console.error("Unexpected error:", error);
+        }
+    };
+
+    const sendEmail = async (email) => {
+        try {
+      
+          const saumyaIp = "10.65.1.76"; 
+          const userPort = "8080"; 
+         console.log("email in sendEmail fun:",email);
+         console.log("proDetails in sendEmailfun:",JSON.stringify(productDetails));
+        //  console.log
+          const response = await fetch(`http://${saumyaIp}:${userPort}/user/order/${email}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(productDetails),
+          });
+      
+          if (!response.ok) {
+            throw new Error("Failed to send email");
+          }
+      
+          const data = await response.json();
+          console.log("Email sent successfully:", data);
+          alert("Order placed successfully! Check your email.");
+          navigate('/order');
+          // alert("Email sent successfully!");
+        } catch (error) {
+          console.error("Error sending email:", error);
+          alert("Failed to send email.");
+        }
+      };
+
+      const stockDec = async (productMap, addressAid) => {
+        console.log("StockDec function called");
+        const abhishekIp = "10.65.1.185";
+        const productPort = "8095";
+    
+        try {
+            console.log("Updating stock for:", productMap);
+    
+            // Process all stock updates concurrently
+            await Promise.all(
+                productMap.map(async (product) => {
+                    const { pid, quantity } = product;
+                    console.log("Updating stock for Product ID:", pid, "Quantity:", quantity);
+    
+                    const response = await fetch(
+                        `http://${abhishekIp}:${productPort}/products/decStock/${pid}/${quantity}`,
+                        {
+                            method: "PUT",
+                            headers: { "Content-Type": "application/json" },
+                        }
+                    );
+    
+                    if (!response.ok) {
+                        alert('Product is out of stock !!!!!!!!!');
+                        throw new Error(`Stock update failed for product ${pid}`);
+                    }else{
+                        directOrder(userId, addressAid,productMap);
+                        sendEmail(userEmail);    
+                    }
+
+                })
+            );
+    
+            console.log("Stock updated successfully for all products.");
+            // alert("Stock decreased successfully!");
+        } catch (error) {
+            console.error("Error updating stock:", error);
+            alert("Failed to update stock.");
         }
     };
 
