@@ -2,9 +2,11 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Card, CardContent, TextField, IconButton, Button, Box, Snackbar } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Edit, Delete } from "@mui/icons-material";
+import { useUser } from "../../App";
 
 const UserProfileCard = () => {
-    const [login, setLogin] = useState(false);
+    // const [login, setLogin] = useState(false);
+        const { login, toggleLogin } = useUser();
     const [user, setUser] = useState({ name: "", email: "", phone: "", phoneCountryCode: "", errors: {} });
     const [alert, setAlert] = useState(false);
     const [edit, setEdit] = useState(false)
@@ -21,10 +23,9 @@ const UserProfileCard = () => {
     }
 
     useEffect(() => {
-        if (sessionStorage.getItem("user") !== null) {
-            setLogin(true);
+        if (login) {
             setUser(JSON.parse(sessionStorage.getItem("user")));
-        } else { setLogin(false) }
+        }
     }, [])
 
     const validateName = (name) => {
@@ -101,6 +102,8 @@ const UserProfileCard = () => {
                 method: 'DELETE'
             })
             console.log("account deleted")
+            toggleLogin()
+            sessionStorage.removeItem("user");
             setEdit(false)
             setAlert(true)
         } catch (error) {
