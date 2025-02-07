@@ -49,13 +49,16 @@ const SingleProduct = () => {
       }
   
       console.log("User ID:", userId);
-  
       // Call ToBuy function with productId, quantity, and userId
-      ToBuy(productId, quantity, userId);
+      const orders = [
+        { pid: '1', quantity: 2 },
+        { pid: '2', quantity: 1 },
+      ];
+      ToBuy(productId, quantity, userId,1,orders) ;
   
       navigate("/product/buy");
     }
-  
+
     console.log("atBuy:", productId, quantity);
   };
 
