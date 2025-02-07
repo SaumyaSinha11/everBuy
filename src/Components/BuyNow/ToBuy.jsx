@@ -12,4 +12,6 @@ const ToBuy = (userId, email, productMap, productDetails, Aid) => {
     DirectOrder(userId,Aid,productMap);
 }
 
+
+
 export default ToBuy;
