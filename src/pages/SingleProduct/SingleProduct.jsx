@@ -28,15 +28,13 @@ const SingleProduct = () => {
     if (!login) {
       navigate("/user");
     } else {
-      // Retrieve session data
       const sessionData = sessionStorage.getItem("user");
   
       if (!sessionData) {
         console.error("No user data found in session storage.");
         return;
       }
-  
-      // Parse session data
+
       const user = JSON.parse(sessionData);
       const email = user.email;
   
@@ -49,16 +47,11 @@ const SingleProduct = () => {
       }
   
       console.log("User ID:", userId);
-      // Call ToBuy function with productId, quantity, and userId
-      const orders = [
-        { pid: '1', quantity: 2 },
-        { pid: '2', quantity: 1 },
-      ];
-      ToBuy(productId, quantity, userId,1,orders) ;
+      ToBuy(productId, quantity, userId);
   
       navigate("/product/buy");
     }
-
+  
     console.log("atBuy:", productId, quantity);
   };
 
