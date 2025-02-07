@@ -83,3 +83,8 @@ flex-direction: column;
   margin: 0 10px;
   font-weight: bold;
 }
+
+.out-of-stock {
+  color: red;
+  font-weight: bold;
+}

@@ -58,23 +58,26 @@ const SingleProduct = () => {
       console.log("Product map:", productMap);
       const productDetails = [
         {
-          productId:parseInt(productId),
-          productName: product.name, 
-          price: parseFloat(product.price), 
-          totalPrice: parseFloat(product.price * quantity), 
-          quantity: quantity, 
+          productId: parseInt(productId),
+          productName: product.name,
+          price: parseFloat(product.price),
+          totalPrice: parseFloat(product.price * quantity),
+          quantity: quantity,
         },
       ];
 
       console.log("productDetails", productDetails);
-      console.log("Navigating with state:", { userId, email, productMap, productDetails });
-       
+      console.log("Navigating with state:", {
+        userId,
+        email,
+        productMap,
+        productDetails,
+      });
+
       const userEmail = email;
-       navigate("/product/buy", {
+      navigate("/product/buy", {
         state: { userId, userEmail, productMap, productDetails },
-         });
-
-
+      });
     }
   };
 
@@ -215,6 +218,102 @@ const SingleProduct = () => {
 
   if (!product) return <div>Product not found</div>;
 
+  // return (
+  //   <div>
+  //     <div className="product-details">
+  //       <div className="image-container">
+  //         <img src={product.imageUrls[0]} alt={product.name} />
+  //       </div>
+  //       <div className="details-container">
+  //         <h2>{product.name}</h2>
+  //         <p>
+  //           <strong>Brand:</strong> {product.brand}
+  //         </p>
+  //         <p>
+  //           <strong>Category:</strong> {product.category}
+  //         </p>
+  //         <p>
+  //           <strong>Price:</strong> ${product.price}
+  //         </p>
+  //         <p>
+  //           <strong>Rating:</strong> ⭐ {product.rating}/5
+  //         </p>
+  //         <p>
+  //           <strong>Stock:</strong> {product.stock} available
+  //         </p>
+  //         <div className="quantity-controls">
+  //           <button className="quantity-btn" onClick={decreaseQuantity}>
+  //             -
+  //           </button>
+  //           <span className="quantity">{quantity}</span>
+  //           <button className="quantity-btn" onClick={increaseQuantity}>
+  //             +
+  //           </button>
+  //         </div>
+  //         <div className="button-sin-pro">
+  //           <button
+  //             className="add-to-cart-btn"
+  //             onClick={() => {
+  //               AddToCart();
+  //             }}
+  //           >
+  //             Add to Cart
+  //           </button>
+  //           <button className="add-to-cart-btn" onClick={handleBuy}>
+  //             Buy Now
+  //           </button>
+  //         </div>
+  //       </div>
+  //     </div>
+
+  //     <div className="product-description">
+  //       <h3>Description</h3>
+  //       <p>
+  //         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos
+  //         sociosqu sodales erat, nam est habitasse. Suspendisse enim molestie
+  //         duis lacinia; interdum ante posuere. Libero aptent curae hac dis
+  //         vulputate lobortis eleifend dui parturient. orem ipsum dolor sit amet,
+  //         consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
+  //         habiorem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos
+  //         sociosqu sodales erat, nam est habiorem ipsum dolor sit amet,
+  //         consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
+  //         habiorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum
+  //         dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales
+  //         erat, nam est habitasse. Suspendisse enim molestie duis lacinia;
+  //         interdum ante posuere. Libero aptent curae hac dis vulputate lobortis
+  //         eleifend dui parturient. orem ipsum dolor sit amet, consectetur
+  //         adipiscing elit. Inceptos sociosqu sodales erat, Lorem ipsum dolor sit
+  //         amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam
+  //         est habitasse. Suspendisse enim molestie duis lacinia; interdum ante
+  //         posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui
+  //         parturient. orem ipsum dolor sit amet, consectetur adipiscing elit.
+  //         Inceptos sociosqu sodales erat, Lorem ipsum dolor sit amet,
+  //         consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
+  //         habitasse. Suspendisse enim molestie duis lacinia; interdum ante
+  //         posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui
+  //         parturient. orem ipsum dolor sit amet, consectetur adipiscing elit.
+  //         Inceptos sociosqu sodales erat, Lorem ipsum dolor sit amet,
+  //         consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
+  //         habitasse. Suspendisse enim molestie duis lacinia; interdum ante
+  //         posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui
+  //         parturient. orem ipsum dolor sit amet, consectetur adipiscing elit.
+  //         Inceptos sociosqu sodales erat, Lorem ipsum dolor sit amet,
+  //         consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
+  //         habitasse. Suspendisse enim molestie duis lacinia; interdum ante
+  //         posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui
+  //         parturient. orem ipsum dolor sit amet, consectetur adipiscing elit.
+  //         Inceptos sociosqu sodales erat, Lorem ipsum dolor sit amet,
+  //         consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
+  //         habitasse. Suspendisse enim molestie duis lacinia; interdum ante
+  //         posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui
+  //         parturient. orem ipsum dolor sit amet, consectetur adipiscing elit.
+  //         Inceptos sociosqu sodales erat, Inceptos sociosqu sodales erat, nam
+  //         est habi
+  //       </p>
+  //     </div>
+  //   </div>
+  // );
+
   return (
     <div>
       <div className="product-details">
@@ -236,27 +335,47 @@ const SingleProduct = () => {
             <strong>Rating:</strong> ⭐ {product.rating}/5
           </p>
           <p>
-            <strong>Stock:</strong> {product.stock} available
+            <strong>Stock:</strong>{" "}
+            {product.stock > 0 ? (
+              `${product.stock} available`
+            ) : (
+              <span className="out-of-stock">Out of Stock</span>
+            )}
           </p>
+
+          {/* Quantity Controls - Disable if Out of Stock */}
           <div className="quantity-controls">
-            <button className="quantity-btn" onClick={decreaseQuantity}>
+            <button
+              className="quantity-btn"
+              onClick={decreaseQuantity}
+              disabled={product.stock === 0}
+            >
               -
             </button>
             <span className="quantity">{quantity}</span>
-            <button className="quantity-btn" onClick={increaseQuantity}>
+            <button
+              className="quantity-btn"
+              onClick={increaseQuantity}
+              disabled={product.stock === 0}
+            >
               +
             </button>
           </div>
+
+          {/* Buttons - Disable if Out of Stock */}
           <div className="button-sin-pro">
             <button
               className="add-to-cart-btn"
-              onClick={() => {
-                AddToCart();
-              }}
+              onClick={AddToCart}
+              disabled={product.stock === 0}
             >
               Add to Cart
             </button>
-            <button className="add-to-cart-btn" onClick={handleBuy}>
+            <button
+              className="add-to-cart-btn"
+              onClick={handleBuy}
+              disabled={product.stock === 0}
+            >
               Buy Now
             </button>
           </div>
