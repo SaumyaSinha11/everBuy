@@ -37,7 +37,7 @@ const handleLogout = () => {
   return (
     <nav className="navbar">
       {/* Top Bar */}
-      <div className="top-bar">
+      {/* <div className="top-bar">
         <div className="left-links">
           <a href="#">About Us</a>
           <a href="#">Shipping & Returns</a>
@@ -46,11 +46,13 @@ const handleLogout = () => {
           <a href="#">Check out what’s on sale</a>
           <button className="help-btn">HELP CENTER</button>
         </div>
-      </div>
+      </div> */}
 
       {/* Logo & Search */}
       <div className="main-nav">
-        <div className="logo">Ever Buy</div>
+        <div className="logo" onClick={()=>{
+          navigate('/');
+        }}>Ever Buy</div>
         <div className="search-bar">
           <input type="text" placeholder="What are you looking for today?" />
           <button className="search-btn">
@@ -72,7 +74,9 @@ const handleLogout = () => {
             {login ? ( // If the user is logged in
               <>
                 <MenuItem onClick={handleProfile}>My Profile</MenuItem>
-                <MenuItem>My Orders</MenuItem>
+                <MenuItem onClick={()=>{
+                  navigate('/order');
+                }}>My Orders</MenuItem>
                 <MenuItem onClick={handleLogout}>Log Out</MenuItem>
               </>
             ) : ( // If the user is not logged in

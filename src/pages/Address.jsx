@@ -2,7 +2,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import {Box, Button, Card, CardContent, InputAdornment, Stack, TextField, Typography, styled} from "@mui/material";
 import ToBuy from "../Components/BuyNow/ToBuy";
-import { useLocation } from "react-router-dom";
+import { useLocation ,useNavigate} from "react-router-dom";
 
 const StyledCard = styled(Card)(({ theme }) => ({
     maxWidth: 400,
@@ -12,37 +12,13 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 export default function Buy() {
+     const navigate = useNavigate();
 
     const saumyaIp = "10.65.1.76";
     const userPort = "8080";
 
     const location = useLocation();
-    const { productId, quantity, userId } = location.state || {};
-    const [email, setEmail] = useState("");
-
-    useEffect(() => {
-        const user = JSON.parse(sessionStorage.getItem("user"));
-        console.log("from use effect", user)
-        if (user && user.email) {
-            setEmail(user.email);
-        } else {
-            console.error("No user data in sessionStorage");
-        }
-    }, []);
-
-    const fetchUserId = async (email) => {
-        try {
-            const response = await fetch(`http://${saumyaIp}:${userPort}/user/id/${email}`);
-            if (!response.ok) {
-                throw new Error(`Failed to fetch user ID: ${response.status} ${response.statusText}`);
-            }
-            const userId = await response.json();
-            return userId;
-        } catch (error) {
-            console.error("Error fetching user ID:", error);
-            return null;
-        }
-    };
+    const { userId, userEmail, productMap, productDetails } = location.state || {};
 
     const [formData, setFormData] = useState({
         homeName: "",
@@ -73,7 +49,7 @@ export default function Buy() {
         e.preventDefault();
         console.log("running");
 
-        console.log(email);
+        console.log("email:",userEmail);
 
         const errors = {};
 
@@ -89,16 +65,16 @@ export default function Buy() {
         if (Object.keys(errors).length > 0) return;
 
         try {
-            const cId = await fetchUserId(email);
-            if (!cId) {
-                console.error("Failed to fetch customer ID");
-                return;
-            }
+            // const userId = await fetchUserId(email);
+            // if (!userId) {
+            //     console.error("Failed to fetch customer ID");
+            //     return;
+            // }
 
-            console.log("customer id - ", cId);
+            console.log("customer id - ", userId);
 
             const formattedData = {
-                customerId: cId,
+                customerId: userId,
                 homeName: formData.homeName,
                 street: formData.street,
                 city: formData.city,
@@ -124,9 +100,22 @@ export default function Buy() {
                 throw new Error(`HTTP error! : ${errorText}`);
             }
 
-            const responseData = await response.json();
-            ToBuy(productId, quantity, userId, responseData)
-            console.log("Response from server:", responseData);
+            const confirmOrder = window.confirm("Should we proceed with your Order?");
+  
+            if (!confirmOrder) {
+              navigate(-1);
+              return;
+            }
+            
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log("email just before sending :",userEmail);
+                await ToBuy(userId, userEmail, productMap, productDetails, responseData);
+                alert("Order placed successfully! Check your email.");
+                navigate('/order');
+            } else {
+                alert("Failed to place order. Try again later.");
+            }
 
         } catch (error) {
             console.log("Error in fetching data:", error);

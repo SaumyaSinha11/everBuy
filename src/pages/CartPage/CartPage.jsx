@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Box, Container, Grid, Typography, Button, Card, CardContent, Stack, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Container,
+  Grid,
+  Typography,
+  Button,
+  Card,
+  CardContent,
+  Stack,
+  CircularProgress,
+} from "@mui/material";
 import { FiShoppingCart } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import CartItem from "../../Components/Cart/Card";
@@ -16,14 +26,18 @@ const CartPage = () => {
   const userPort = "8080";
   const cartPort = "8081";
   const abhishekIp = "10.65.1.185";
-  const productPort="8095";
+  const productPort = "8095";
 
   // Fetch user ID
   const fetchUserId = async (email, saumyaIp, userPort) => {
     try {
-      const response = await fetch(`http://${saumyaIp}:${userPort}/user/id/${email}`);
+      const response = await fetch(
+        `http://${saumyaIp}:${userPort}/user/id/${email}`
+      );
       if (!response.ok) {
-        throw new Error(`Failed to fetch user ID: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch user ID: ${response.status} ${response.statusText}`
+        );
       }
       const userId = await response.json();
       return userId;
@@ -36,13 +50,20 @@ const CartPage = () => {
   // Fetch product details
   const fetchProductDetails = async (productId) => {
     try {
-      const response = await fetch(`http://${abhishekIp}:${productPort}/products/product/${productId}`);
+      const response = await fetch(
+        `http://${abhishekIp}:${productPort}/products/product/${productId}`
+      );
       if (!response.ok) {
-        throw new Error(`Failed to fetch product details: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch product details: ${response.status} ${response.statusText}`
+        );
       }
       return await response.json();
     } catch (error) {
-      console.error(`Error fetching product details for pid: ${productId}`, error);
+      console.error(
+        `Error fetching product details for pid: ${productId}`,
+        error
+      );
       return null;
     }
   };
@@ -57,17 +78,23 @@ const CartPage = () => {
     const getCartItems = async (userId) => {
       setLoading(true);
       try {
-        const cartResponse = await fetch(`http://${saumyaIp}:${cartPort}/user/cart/${userId}`);
+        const cartResponse = await fetch(
+          `http://${saumyaIp}:${cartPort}/user/cart/${userId}`
+        );
         if (!cartResponse.ok) {
-          throw new Error(`Failed to fetch cart items: ${cartResponse.status} ${cartResponse.statusText}`);
+          throw new Error(
+            `Failed to fetch cart items: ${cartResponse.status} ${cartResponse.statusText}`
+          );
         }
         const cartData = await cartResponse.json();
-         
+
         const cartItemsWithDetails = await Promise.all(
           cartData.map(async (cartItem) => {
-            const productDetails = await fetchProductDetails(cartItem.productId);
+            const productDetails = await fetchProductDetails(
+              cartItem.productId
+            );
             console.log(productDetails);
-            return { ...cartItem, ...productDetails }; 
+            return { ...cartItem, ...productDetails };
           })
         );
         setCartItems(cartItemsWithDetails);
@@ -81,45 +108,46 @@ const CartPage = () => {
     const email = getUserEmail();
     if (email) {
       setUserEmail(email);
-      fetchUserId(email, saumyaIp, userPort)
-        .then((userId) => {
-          if (userId) {
-            setUserId(userId);
-            getCartItems(userId);
-          } else {
-            setLoading(false); 
-          }
-        });
+      fetchUserId(email, saumyaIp, userPort).then((userId) => {
+        if (userId) {
+          setUserId(userId);
+          getCartItems(userId);
+        } else {
+          setLoading(false);
+        }
+      });
     } else {
-      setLoading(false); 
+      setLoading(false);
     }
   }, []);
 
-const checkStockBeforeUpdate = (productId, quantity) => {
-  const item = cartItems.find(item => item.productId === productId);
-  if (item && quantity > item.stock) {
-    alert(`Cannot update quantity. Only ${item.stock} items are in stock.`);
-    return false;
-  }
-  return true;
-};
+  const checkStockBeforeUpdate = (productId, quantity) => {
+    const item = cartItems.find((item) => item.productId === productId);
+    if (item && quantity > item.stock) {
+      alert(`Cannot update quantity. Only ${item.stock} items are in stock.`);
+      return false;
+    }
+    return true;
+  };
 
   // Update item quantity and backend
-  const editQuantity = async (cartId, quantity , productId) => {
-
-   if (!checkStockBeforeUpdate(productId, quantity)) {
-    return;
+  const editQuantity = async (cartId, quantity, productId) => {
+    if (!checkStockBeforeUpdate(productId, quantity)) {
+      return;
     }
 
     try {
-      const response = await fetch(`http://${saumyaIp}:${cartPort}/user/cart/${cartId}/${quantity}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // body: JSON.stringify({ quantity }),
-      });
-      
+      const response = await fetch(
+        `http://${saumyaIp}:${cartPort}/user/cart/${cartId}/${quantity}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          // body: JSON.stringify({ quantity }),
+        }
+      );
+
       if (response.ok) {
         // Update local state after successful backend update
         setCartItems((prevItems) =>
@@ -138,13 +166,18 @@ const checkStockBeforeUpdate = (productId, quantity) => {
   // Remove item from cart
   const removeItem = async (cartId) => {
     try {
-      const response = await fetch(`http://${saumyaIp}:${cartPort}/user/cart/${cartId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `http://${saumyaIp}:${cartPort}/user/cart/${cartId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (response.ok) {
         // Remove the deleted item from the cartItems state
-        setCartItems((prevItems) => prevItems.filter((item) => item.cartId !== cartId));
+        setCartItems((prevItems) =>
+          prevItems.filter((item) => item.cartId !== cartId)
+        );
       } else {
         console.error("Failed to delete item from the cart");
       }
@@ -154,13 +187,15 @@ const checkStockBeforeUpdate = (productId, quantity) => {
   };
 
   const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    return cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
   };
 
   const handleContinueShopping = () => {
-    navigate(-1);
+    navigate('/');
   };
-
 
   const handleBuy = async () => {
     if (!userId || !userEmail) {
@@ -168,34 +203,40 @@ const checkStockBeforeUpdate = (productId, quantity) => {
       return;
     }
     // Create a map of productId -> quantity
-    const productMap = cartItems.reduce((acc, item) => {
-      acc[item.productId] = item.quantity;
-      return acc;
-    }, {});
+    const productMap = cartItems.map((item) => ({
+      pid: item.productId,
+      quantity: item.quantity,
+    }));
 
-    console.log("email:",userEmail);
-    console.log("userId",userId);
+    // Correct productDetails format
+    const productDetails = cartItems.map((item) => ({
+      productId: item.productId,
+      productName: item.name,
+      price: parseFloat(item.price),
+      totalPrice: parseFloat(item.price * item.quantity),
+      quantity: item.quantity,
+    }));
 
-    console.log("cartitems:",cartItems);
-    console.log("poductMap:",productMap);
-  
+    console.log("Email:", userEmail);
+    console.log("UserId:", userId);
+    console.log("Product Map:", productMap);
+    console.log("Product Details:", productDetails);
     try {
-      // navigate("/product/buy", {
-      //   state:{email,userId, productMap, productDetails},
-      // });
+      for (const item of cartItems) {
+        await removeItem(item.cartId); 
+      }
+      console.log("email of user:",userEmail);
+      console.log("Navigating with state:", { userId, userEmail, productMap, productDetails });
+      navigate("/product/buy", {
+        state:{userId,userEmail ,productMap, productDetails},
+      });
 
-      ToBuy(userEmail ,userId ,productMap,cartItems);
-
-      // await ToBuy(userId, userEmail, productMap, cartItems , 2);
-      // navigate("/product/buy");
 
     } catch (error) {
       console.error("Error during purchase:", error);
       alert("Failed to process the purchase.");
     }
   };
-  
-
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -203,7 +244,14 @@ const checkStockBeforeUpdate = (productId, quantity) => {
         Shopping Cart
       </Typography>
       {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "50vh" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "50vh",
+          }}
+        >
           <CircularProgress />
         </Box>
       ) : (
@@ -214,11 +262,11 @@ const checkStockBeforeUpdate = (productId, quantity) => {
                 <Typography variant="body1">Your cart is empty.</Typography>
               ) : (
                 cartItems.map((item) => (
-                  <CartItem 
-                    key={item.cartId} 
-                    item={item} 
-                    updateQuantity={editQuantity} 
-                    removeItem={removeItem} 
+                  <CartItem
+                    key={item.cartId}
+                    item={item}
+                    updateQuantity={editQuantity}
+                    removeItem={removeItem}
                   />
                 ))
               )}
@@ -233,17 +281,27 @@ const checkStockBeforeUpdate = (productId, quantity) => {
                 </Typography>
                 <Box sx={{ my: 2 }}>
                   <Typography variant="body1">
-                    Total Items: {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+                    Total Items:{" "}
+                    {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
                   </Typography>
                   <Typography variant="h5" sx={{ mt: 2 }}>
                     Total: ${getTotalPrice().toFixed(2)}
                   </Typography>
                 </Box>
                 <Stack spacing={2}>
-                  <Button variant="contained" size="large" startIcon={<FiShoppingCart />} onClick={handleBuy}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    startIcon={<FiShoppingCart />}
+                    onClick={handleBuy}
+                  >
                     Buy Now
                   </Button>
-                  <Button variant="outlined" size="large" onClick={handleContinueShopping}>
+                  <Button
+                    variant="outlined"
+                    size="large"
+                    onClick={handleContinueShopping}
+                  >
                     Continue Shopping
                   </Button>
                 </Stack>

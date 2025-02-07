@@ -8,20 +8,26 @@ const StockDec = async (productMap) => {
 
         // Process all stock updates concurrently
         await Promise.all(
-            Object.entries(productMap).map(async ([productId, quantity]) => {
-                const response = await fetch(`http://${abhishekIp}:${productPort}/products/decStock/${productId}/${quantity}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                });
+            productMap.map(async (product) => {
+                const { pid, quantity } = product;
+                console.log("Updating stock for Product ID:", pid, "Quantity:", quantity);
+
+                const response = await fetch(
+                    `http://${abhishekIp}:${productPort}/products/decStock/${pid}/${quantity}`,
+                    {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                    }
+                );
 
                 if (!response.ok) {
-                    throw new Error(`Stock update failed for product ${productId}`);
+                    throw new Error(`Stock update failed for product ${pid}`);
                 }
             })
         );
 
         console.log("Stock updated successfully for all products.");
-        alert("Stock decreased successfully!");
+        // alert("Stock decreased successfully!");
     } catch (error) {
         console.error("Error updating stock:", error);
         alert("Failed to update stock.");

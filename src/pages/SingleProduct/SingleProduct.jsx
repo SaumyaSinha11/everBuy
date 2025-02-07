@@ -67,16 +67,14 @@ const SingleProduct = () => {
       ];
 
       console.log("productDetails", productDetails);
+      console.log("Navigating with state:", { userId, email, productMap, productDetails });
+       
+      const userEmail = email;
+       navigate("/product/buy", {
+        state: { userId, userEmail, productMap, productDetails },
+         });
 
-      ToBuy(userId, email, productMap, productDetails, 3);
-      // navigate("/product/buy", {
-      //   state: { productId, quantity, userId },
-      // });
 
-      // console.log("productMap:", productMap);
-
-      // Call ToBuy function to send the email and order details
-      // ToBuy(email, userId, productMap, productDetails, 1);
     }
   };
 

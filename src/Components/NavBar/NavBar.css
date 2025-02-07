@@ -51,6 +51,7 @@
   color: white;
   padding: 10px;
   display: inline-block;
+  cursor: pointer;
 }
 
 /* Search Bar */
