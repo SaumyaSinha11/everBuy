@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import {
   Alert, Snackbar, Box, Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputAdornment, Stack, TextField, Typography, styled, Link
 } from "@mui/material";
-import { FaEye, FaEyeSlash, FaEnvelope, FaLock, FaUser, FaPhone, FaPlus } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaEnvelope, FaLock, FaUser, FaPhoneAlt, FaPlus } from "react-icons/fa";
 import { validateForm } from "./ValidateForm";
 import { useUser } from "../../App";
 import  {useNavigate} from "react-router-dom";
@@ -21,7 +21,6 @@ const AuthPage = () => {
 
   const [showAlert, setShowAlert] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [openRegister, setOpenRegister] = useState(false);
   const [error, setError] = useState(false)
@@ -222,10 +221,11 @@ const AuthPage = () => {
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
-                          onClick={() => setShowPassword(!showPassword)}
+                          onMouseOver={() => setShowPassword(true)}
+                          onMouseOut={()=>setShowPassword(false)}
                           edge="end"
                         >
-                          {showPassword ? <FaEyeSlash /> : <FaEye />}
+                          {showPassword ? <FaEye/> : <FaEyeSlash />}
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -329,7 +329,7 @@ const AuthPage = () => {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <FaPhone />
+                          <FaPhoneAlt />
                         </InputAdornment>
                       ),
                     }}
@@ -338,7 +338,7 @@ const AuthPage = () => {
                 <TextField
                   fullwidth
                   label="Password"
-                  type={showRegisterPassword ? "text" : "password"}
+                  type={showPassword ? "text" : "password"}
                   value={registerForm.password}
                   onChange={handleRegisterChange("password")}
                   error={!!registerForm.errors.password}
@@ -352,12 +352,11 @@ const AuthPage = () => {
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
-                          onClick={() =>
-                            setShowRegisterPassword(!showRegisterPassword)
-                          }
+                          onMouseOver={() => setShowPassword(true)}
+                          onMouseOut={()=>setShowPassword(false)}
                           edge="end"
                         >
-                          {showRegisterPassword ? <FaEyeSlash /> : <FaEye />}
+                          {showPassword ? <FaEye/> : <FaEyeSlash  />}
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -381,12 +380,11 @@ const AuthPage = () => {
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
-                          onClick={() =>
-                            setShowConfirmPassword(!showConfirmPassword)
-                          }
+                          onMouseOver={() => setShowConfirmPassword(true)}
+                          onMouseOut={()=>setShowConfirmPassword(false)}
                           edge="end"
                         >
-                          {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                          {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
                         </IconButton>
                       </InputAdornment>
                     ),
