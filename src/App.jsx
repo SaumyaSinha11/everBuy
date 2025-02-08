@@ -11,6 +11,7 @@ import OrderPage from "./pages/OrderPage/OrderPage";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./Theme/LightTheme";
 import Address from "./pages/Address";
+import Suggestions from "./pages/SuggestionsPage/Suggestions";
 
 
 // Create the UserContext
@@ -49,6 +50,7 @@ function App() {
           <Route path="/order" element={<OrderPage/>} />
 
           <Route path="/product/buy" element={<Address/>} />
+          <Route path="/suggestions" element={<Suggestions/>} />
 
         </Routes>
       </Router>

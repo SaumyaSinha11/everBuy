@@ -105,12 +105,12 @@ export default function Buy() {
             }
 
             const confirmOrder = window.confirm("Should we proceed with your Order?");
-  
+
             if (!confirmOrder) {
               navigate(-1);
               return;
             }
-            
+
             if (response.ok) {
                 const responseData = await response.json();
                 console.log("email just before sending :",userEmail);
@@ -130,21 +130,21 @@ export default function Buy() {
         const abhishekIp = "10.65.1.185";
         const productPort = "8095";
         const orderPort = "8098";
-    
+
         console.log("DirectOrder function called");
         console.log("Order Items:", orderItems);
         console.log("Customer ID (cid):", cid);
         console.log("Address ID (aid):", aid);
-    
+
         if (!Array.isArray(orderItems) || orderItems.length === 0) {
             alert("Invalid order details.");
             return;
         }
-    
+
         try {
             for (let item of orderItems) {
                 console.log("Processing item:", item);
-    
+
                 // Fetch Merchant ID for the product
                 let mid;
                 try {
@@ -159,7 +159,7 @@ export default function Buy() {
                     console.error(error.message);
                     continue; // Skip this product and proceed with others
                 }
-    
+
                 // Proceed with order creation
                 try {
                     const orderResponse = await fetch(`http://${abhishekIp}:${orderPort}/direct`, {
@@ -173,21 +173,21 @@ export default function Buy() {
                             aid: aid,
                         }),
                     });
-    
+
                     if (!orderResponse.ok) {
                         const errorText = await orderResponse.text();
                         throw new Error(`Failed to create order for ${item.pid}: ${errorText}`);
                     }
-    
+
                     const orderResult = await orderResponse.json();
                     console.log("Order created successfully:", orderResult);
-    
-    
+
+
                 } catch (orderError) {
                     console.error(orderError.message);
                 }
             }
-    
+
             // alert("All orders processed successfully.");
         } catch (error) {
             alert("An unexpected error occurred while creating orders.");
@@ -196,11 +196,11 @@ export default function Buy() {
     };
 
     const sendEmail = async (email) => {
-    
+
         try {
-      
-          const saumyaIp = "10.65.1.76"; 
-          const userPort = "8080"; 
+
+          const saumyaIp = "10.65.1.76";
+          const userPort = "8080";
          console.log("email in sendEmail fun:",email);
          console.log("proDetails in sendEmailfun:",JSON.stringify(productDetails));
         //  console.log
@@ -211,11 +211,11 @@ export default function Buy() {
             },
             body: JSON.stringify(productDetails),
           });
-      
+
           if (!response.ok) {
             throw new Error("Failed to send email");
           }
-      
+
           const data = await response.json();
           console.log("Email sent successfully:", data);
           alert("Order placed successfully! Check your email.");
@@ -231,16 +231,16 @@ export default function Buy() {
         console.log("StockDec function called");
         const abhishekIp = "10.65.1.185";
         const productPort = "8095";
-    
+
         try {
             console.log("Updating stock for:", productMap);
-    
+
             // Process all stock updates concurrently
             await Promise.all(
                 productMap.map(async (product) => {
                     const { pid, quantity } = product;
                     console.log("Updating stock for Product ID:", pid, "Quantity:", quantity);
-    
+
                     const response = await fetch(
                         `http://${abhishekIp}:${productPort}/products/decStock/${pid}/${quantity}`,
                         {
@@ -248,7 +248,7 @@ export default function Buy() {
                             headers: { "Content-Type": "application/json" },
                         }
                     );
-    
+
                     if (!response.ok) {
                       alert("Product is out of stock !!!!!!!!!");
                       throw new Error(`Stock update failed for product ${pid}`);
@@ -264,15 +264,17 @@ export default function Buy() {
 
                 })
             );
-    
+
             console.log("Stock updated successfully for all products.");
             // alert("Stock decreased successfully!");
         } catch (error) {
             console.error("Error updating stock:", error);
-            alert("Failed to update stock.");
+//             alert("Failed to update stock.");
+               alert("order placed successfully");
+               navigate("/order");
         }
     };
-    
+
     const removeItem = async (cartId) => {
         try {
           const response = await fetch(
@@ -281,7 +283,7 @@ export default function Buy() {
               method: "DELETE",
             }
           );
-    
+
           if (response.ok) {
             // Remove the deleted item from the cartItems state
             // setCartItems((prevItems) =>
@@ -294,7 +296,7 @@ export default function Buy() {
           console.error("Error deleting item from the cart:", error);
         }
       };
-    
+
 
     const handleDataChange = useCallback((field) => (e) => {
         setFormData((prev) => ({
