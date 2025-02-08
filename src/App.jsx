@@ -21,8 +21,8 @@ export const useUser = () => useContext(UserContext);
 // Create a provider to wrap the app and pass down user state
 export const UserProvider = ({ children }) => {
   const [login, setLogin] = useState(() => {
-    const storedUser = sessionStorage.getItem("user");
-    return storedUser ? true : false;
+    const userEmail = localStorage.getItem("userEmail");
+    return userEmail ? true : false;
   });
   const toggleLogin = () => setLogin(!login);
   return (
@@ -42,13 +42,14 @@ function App() {
         <Routes>
           <Route path="/" element={<TrendingProducts />} />
           <Route path="/product/:productId" element={<SingleProduct />} />
-          <Route path="/user" element={<AuthPage />} />
+          <Route path="/login" element={<AuthPage />} />
           <Route path="/user/profile" element={<CustomerProfile />} />
           <Route path="/merchant" element={<MerchantProduct />} />
           <Route path="/cart" element={<Cart/>} />
           <Route path="/order" element={<OrderPage/>} />
 
           <Route path="/product/buy" element={<Address/>} />
+          <Route path="*" element={<TrendingProducts/>}  />
 
         </Routes>
       </Router>

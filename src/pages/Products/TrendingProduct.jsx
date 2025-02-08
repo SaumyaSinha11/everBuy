@@ -44,7 +44,7 @@ const TrendingProducts = () => {
   return (
     <div className="trending-section">
       <div className="trending-header">
-        <h2>TRENDING NOW</h2>
+        <h2>PRODUCTS</h2>
         {/* <button className="view-all-btn">VIEW ALL</button> */}
       </div>
 

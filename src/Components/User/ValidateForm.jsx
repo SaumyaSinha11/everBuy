@@ -5,12 +5,19 @@ export const validateForm = (formValues) => {
   
     // Name validation
     if (!/^[\x41-\x7A\u00C0-\uD7FB\ \']+([\-])*[.]{0,1}$/.test(formValues.fullName) || formValues.fullName.length === 0 || formValues.fullName.length >= 50) {
-      errors.fullName = "Invalid full name";
+      errors.fullName = "Full name must contain letters only";
     }
   
     // Email validation
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.email) || formValues.email.length > 50) {
-      errors.email = "Invalid email format";
+    // if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.email) || formValues.email.length > 50) {
+    //   errors.email = "Please enter a valid email address";
+    // }
+
+    if (!/^[a-zA-Z0-9_]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formValues.email) ||  
+        /\.{2,}/.test(formValues.email) || // Prevents consecutive dots
+        /([a-zA-Z]{2,})\.\1$/.test(formValues.email) || // Prevents repeated TLDs like '.com.com', '.in.in'
+        formValues.email.length > 50) {
+        errors.email = "Please enter a valid email address";
     }
   
     // Password validation
@@ -27,8 +34,14 @@ export const validateForm = (formValues) => {
     }
   
     // Country code validation
-    if (/^[0-9]$/.test(formValues.countryCode) && formValues.countryCode <= 0 || formValues.countryCode >= 999) {
-      errors.countryCode = "Invalid country code";
+    // if (/^[0-9]$/.test(formValues.countryCode) && formValues.countryCode <= 0 || formValues.countryCode >= 999) {
+    //   errors.countryCode = " country code must be in numbers";
+    // }
+
+    if (!formValues.countryCode) {
+      errors.countryCode = "Country code is required";
+    } else if (!/^\d{1,4}$/.test(formValues.countryCode)) {
+      errors.countryCode = "country code must be in numbers and length must be one to four ";
     }
   
     return errors;

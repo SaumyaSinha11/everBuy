@@ -16,7 +16,7 @@
 }
 
 .view-all-btn {
-  background-color: #f7b500;
+  background-color: #42a5f5 !important;
   border: none;
   padding: 8px 15px;
   font-weight: bold;
@@ -24,10 +24,10 @@
 }
 
 .product-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 10px;
+  display: flex !important; 
+  flex-wrap: wrap !important;
+  justify-content:flex-start !important;
+ gap: 10px !important; 
 }
 
 .product-card {
@@ -45,7 +45,7 @@
 }
 
 .product-info {
-  background-color: #f7b500;
+  background-color: #42a5f5 !important;
   padding: 10px;
 }
 

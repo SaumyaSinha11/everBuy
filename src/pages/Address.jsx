@@ -260,6 +260,7 @@ export default function Buy() {
                       }
 
                       sendEmail(userEmail);
+                      navigate('/order');
                     }
 
                 })

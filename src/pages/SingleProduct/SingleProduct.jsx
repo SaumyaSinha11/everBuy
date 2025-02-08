@@ -27,18 +27,14 @@ const SingleProduct = () => {
     if (!login) {
       navigate("/user");
     } else {
-      const sessionData = sessionStorage.getItem("user");
+      const userEmail= localStorage.getItem("userEmail");
 
-      if (!sessionData) {
-        console.error("No user data found in session storage.");
+      if (!userEmail) {
+        console.error("No userEmail found in local storage.");
         return;
       }
 
-      const user = JSON.parse(sessionData);
-      const email = user.email;
-
-      // Fetch user ID
-      const userId = await fetchUserId(email, saumyaIp, userPort);
+      const userId = await fetchUserId(userEmail, saumyaIp, userPort);
 
       if (!userId) {
         console.error("User ID could not be fetched.");
@@ -70,12 +66,12 @@ const SingleProduct = () => {
       console.log("productDetails", productDetails);
       console.log("Navigating with state:", {
         userId,
-        email,
+        userEmail,
         productMap,
         productDetails,
       });
 
-      const userEmail = email;
+ 
       navigate("/product/buy", {
         state: { userId, userEmail, productMap, productDetails },
       });
@@ -134,57 +130,52 @@ const SingleProduct = () => {
       }
 
       const userId = await response.json();
-
-      const sessionData = sessionStorage.getItem("user");
-
-      if (sessionData) {
-        const user = JSON.parse(sessionData);
-        // Add the userId to the user data
-        user.userId = userId;
-
-        // Update sessionStorage with the new user data
-        sessionStorage.setItem("user", JSON.stringify(user));
-      }
-
-      return userId; // Returning the user ID
+      return userId; 
     } catch (error) {
       console.error("Error fetching user ID:", error);
       return null;
     }
   };
 
+
   const AddToCart = async () => {
-    if (!login) navigate("/user");
     try {
       // Retrieve session data
-      const sessionData = sessionStorage.getItem("user");
-
-      if (!sessionData) {
-        console.error("No user data found in session storage.");
+      const userEmail = localStorage.getItem("userEmail");
+      console.log("Add to cart function:", userEmail);
+  
+      if (!userEmail) {
+        // User is not logged in, store product in localStorage
+        const cartItems = JSON.parse(localStorage.getItem("guestCart")) || [];
+  
+        const existingProduct = cartItems.find(item => item.productId === productId);
+        if (existingProduct) {
+          existingProduct.quantity += quantity;
+        } else {
+          cartItems.push({ productId, quantity });
+        }
+  
+        localStorage.setItem("guestCart", JSON.stringify(cartItems));
+        console.log("Added to guest cart:", cartItems);
+        alert("Item added to cart!");
         return;
       }
-
-      // Parse session data
-      const user = JSON.parse(sessionData);
-      const email = user.email;
-
-      console.log("User Email:", email);
-
-      // Fetch user ID
-      const userId = await fetchUserId(email, saumyaIp, userPort);
-
+  
+      // User is logged in, proceed with API call
+      const userId = await fetchUserId(userEmail, saumyaIp, userPort);
+  
       if (!userId) {
         console.error("User ID could not be fetched.");
         return;
       }
-
+  
       console.log("User ID:", userId);
-
       await addItemToCart(userId, productId, quantity);
     } catch (error) {
       console.error("Error in AddToCart:", error);
     }
   };
+  
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -333,7 +324,7 @@ const SingleProduct = () => {
             <strong>Price:</strong> ${product.price}
           </p>
           <p>
-            <strong>Rating:</strong> ⭐ {product.rating}/5
+            <strong>Rating:</strong> ⭐ 4.5/5
           </p>
           <p>
             <strong>Stock:</strong>{" "}
@@ -428,7 +419,7 @@ const SingleProduct = () => {
           est habi
         </p>
       </div>
-      <MerchantList/>
+      {/* <MerchantList/> */}
     </div>
   );
 };

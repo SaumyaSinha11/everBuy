@@ -49,9 +49,20 @@ const AuthPage = () => {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   const validateEmail = (email) => {
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length < 50 && email.length != 0) return true;
-    return false;
-  };
+    if (!email || email.length === 0 || email.length > 50) return false;
+
+    // Improved regex
+    if (!/^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email) ||  
+        /\.{2,}/.test(email) || // Prevents consecutive dots
+        /([a-zA-Z]{2,})\.\1$/.test(email) || // Prevents repeated TLDs like '.com.com', '.in.in'
+        email.includes("..@") || // Prevents "..@" (invalid format)
+        email.match(/^\.|\.$/) // Prevents leading or trailing dot
+    ) {
+        return false;
+    }
+
+    return true;
+   };
 
   const validatePassword = (password) => {
     if (password.length >= 8 && password.length <= 15) return true;
@@ -61,7 +72,7 @@ const AuthPage = () => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     const errors = {};
-    if (!validateEmail(loginForm.email)) errors.email = "Invalid email format";
+    if (!validateEmail(loginForm.email)) errors.email = "Please enter a valid email address ";
     if (!validatePassword(loginForm.password)) errors.password = "Password must be at least 8 characters";
     setLoginForm((prev) => ({ ...prev, errors }));
     if (Object.keys(errors).length === 0) {
@@ -70,7 +81,7 @@ const AuthPage = () => {
         password: loginForm.password,
       };
 
-      console.log("Sending data:", JSON.stringify(formattedData)); // Debugging
+      // console.log("Sending data:", JSON.stringify(formattedData)); 
 
       try {
         const response = await fetch(`http://${saumyaIp}:${userPort}/users/login`, {
@@ -91,10 +102,10 @@ const AuthPage = () => {
 
 
         const responseData = await response.json();
-        sessionStorage.setItem("user", JSON.stringify(responseData))
-//         login(responseData);
+        // sessionStorage.setItem("user", JSON.stringify(responseData))
+        localStorage.setItem("userEmail",responseData.email);
 
-        console.log("Response from server:", responseData);
+        console.log("Response from server:", responseData.email);
         console.log("Login successful");
         toggleLogin();
         navigate("/");
@@ -139,12 +150,12 @@ const AuthPage = () => {
         }
 
         const responseData = await response.json();
-        sessionStorage.setItem("user", JSON.stringify(responseData))
+        localStorage.setItem("userEmail",responseData.email);
 
-        console.log("Response from server:", responseData);
-
-        setShowAlert(true);
-        setOpenRegister(false);
+        console.log("Response from server:", responseData.email);
+        console.log("Register successful");
+        toggleLogin();
+        navigate("/");
 
       } catch (error) {
         console.log("Error in fetching data:", error);
@@ -384,7 +395,7 @@ const AuthPage = () => {
                           onMouseOut={()=>setShowConfirmPassword(false)}
                           edge="end"
                         >
-                          {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
+                          {showConfirmPassword ?<FaEye/> : <FaEyeSlash  />}
                         </IconButton>
                       </InputAdornment>
                     ),

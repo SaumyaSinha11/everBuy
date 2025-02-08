@@ -2,6 +2,14 @@
 .navbar {
   font-family: Arial, sans-serif;
   width: 100%;
+  position: fixed;  /* Keeps it fixed */
+  top: 0;  /* Sticks to the top */
+  left: 0;
+  z-index: 1000
+}
+
+body {
+  padding-top: 120px;  /* Adjust this based on your navbar's height */
 }
 
 /* Top Bar */
@@ -41,7 +49,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  background-color:#f7b500;
+  background-color:#42a5f5;
+
 }
 
 .logo {
