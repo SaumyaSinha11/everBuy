@@ -21,13 +21,14 @@ export const useUser = () => useContext(UserContext);
 
 // Create a provider to wrap the app and pass down user state
 export const UserProvider = ({ children }) => {
+  const [cartQuantity , setCartQuantity] =useState(0);
   const [login, setLogin] = useState(() => {
     const userEmail = localStorage.getItem("userEmail");
     return userEmail ? true : false;
   });
   const toggleLogin = () => setLogin(!login);
   return (
-    <UserContext.Provider value={{ login, toggleLogin }}>
+    <UserContext.Provider value={{ login, toggleLogin ,setCartQuantity}}>
       {children}
     </UserContext.Provider>
   );

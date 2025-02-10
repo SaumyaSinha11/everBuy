@@ -150,7 +150,7 @@ export default function Buy() {
     }
 
     const validateArea = (area) => {
-        if (/^[\x41-\x7A\u00C0-\uD7FB\ \']+([\-])*$/.test(area) && area.length < 50 && area.length != 0) return true;
+        if (/^[\x41-\x7A\u00C0-\uD7FB\ \']+([\-])*$/.test(area) && area.length < 50 && area.length >2) return true;
         return false;
     }
 
@@ -368,8 +368,10 @@ export default function Buy() {
                     } else {
                         directOrder(userId, addressAid, productMap);
 
-                        for (const item of cartIdList) {
-                            await removeItem(item.cartId);
+                        if (cartIdList && cartIdList.length > 0) {
+                            for (const item of cartIdList) {
+                                await removeItem(item.cartId);
+                            }
                         }
 
                       sendEmail(userEmail);

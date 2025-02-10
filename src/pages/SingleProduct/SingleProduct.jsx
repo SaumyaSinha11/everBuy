@@ -6,7 +6,7 @@ import ToBuy from "../../Components/BuyNow/ToBuy";
 import MerchantList from "./MerchantList";
 
 const SingleProduct = () => {
-  const { productId } = useParams(); 
+  const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -71,7 +71,7 @@ const SingleProduct = () => {
         productDetails,
       });
 
- 
+
       navigate("/product/buy", {
         state: { userId, userEmail, productMap, productDetails },
       });
@@ -130,7 +130,7 @@ const SingleProduct = () => {
       }
 
       const userId = await response.json();
-      return userId; 
+      return userId;
     } catch (error) {
       console.error("Error fetching user ID:", error);
       return null;
@@ -143,39 +143,39 @@ const SingleProduct = () => {
       // Retrieve session data
       const userEmail = localStorage.getItem("userEmail");
       console.log("Add to cart function:", userEmail);
-  
+
       if (!userEmail) {
         // User is not logged in, store product in localStorage
         const cartItems = JSON.parse(localStorage.getItem("guestCart")) || [];
-  
+
         const existingProduct = cartItems.find(item => item.productId === productId);
         if (existingProduct) {
           existingProduct.quantity += quantity;
         } else {
           cartItems.push({ productId, quantity });
         }
-  
+
         localStorage.setItem("guestCart", JSON.stringify(cartItems));
         console.log("Added to guest cart:", cartItems);
         alert("Item added to cart!");
         return;
       }
-  
+
       // User is logged in, proceed with API call
       const userId = await fetchUserId(userEmail, saumyaIp, userPort);
-  
+
       if (!userId) {
         console.error("User ID could not be fetched.");
         return;
       }
-  
+
       console.log("User ID:", userId);
       await addItemToCart(userId, productId, quantity);
     } catch (error) {
       console.error("Error in AddToCart:", error);
     }
   };
-  
+
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -209,102 +209,6 @@ const SingleProduct = () => {
   if (error) return <div className="error-message">{error}</div>;
 
   if (!product) return <div>Product not found</div>;
-
-  // return (
-  //   <div>
-  //     <div className="product-details">
-  //       <div className="image-container">
-  //         <img src={product.imageUrls[0]} alt={product.name} />
-  //       </div>
-  //       <div className="details-container">
-  //         <h2>{product.name}</h2>
-  //         <p>
-  //           <strong>Brand:</strong> {product.brand}
-  //         </p>
-  //         <p>
-  //           <strong>Category:</strong> {product.category}
-  //         </p>
-  //         <p>
-  //           <strong>Price:</strong> ${product.price}
-  //         </p>
-  //         <p>
-  //           <strong>Rating:</strong> ⭐ {product.rating}/5
-  //         </p>
-  //         <p>
-  //           <strong>Stock:</strong> {product.stock} available
-  //         </p>
-  //         <div className="quantity-controls">
-  //           <button className="quantity-btn" onClick={decreaseQuantity}>
-  //             -
-  //           </button>
-  //           <span className="quantity">{quantity}</span>
-  //           <button className="quantity-btn" onClick={increaseQuantity}>
-  //             +
-  //           </button>
-  //         </div>
-  //         <div className="button-sin-pro">
-  //           <button
-  //             className="add-to-cart-btn"
-  //             onClick={() => {
-  //               AddToCart();
-  //             }}
-  //           >
-  //             Add to Cart
-  //           </button>
-  //           <button className="add-to-cart-btn" onClick={handleBuy}>
-  //             Buy Now
-  //           </button>
-  //         </div>
-  //       </div>
-  //     </div>
-
-  //     <div className="product-description">
-  //       <h3>Description</h3>
-  //       <p>
-  //         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos
-  //         sociosqu sodales erat, nam est habitasse. Suspendisse enim molestie
-  //         duis lacinia; interdum ante posuere. Libero aptent curae hac dis
-  //         vulputate lobortis eleifend dui parturient. orem ipsum dolor sit amet,
-  //         consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
-  //         habiorem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos
-  //         sociosqu sodales erat, nam est habiorem ipsum dolor sit amet,
-  //         consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
-  //         habiorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum
-  //         dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales
-  //         erat, nam est habitasse. Suspendisse enim molestie duis lacinia;
-  //         interdum ante posuere. Libero aptent curae hac dis vulputate lobortis
-  //         eleifend dui parturient. orem ipsum dolor sit amet, consectetur
-  //         adipiscing elit. Inceptos sociosqu sodales erat, Lorem ipsum dolor sit
-  //         amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam
-  //         est habitasse. Suspendisse enim molestie duis lacinia; interdum ante
-  //         posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui
-  //         parturient. orem ipsum dolor sit amet, consectetur adipiscing elit.
-  //         Inceptos sociosqu sodales erat, Lorem ipsum dolor sit amet,
-  //         consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
-  //         habitasse. Suspendisse enim molestie duis lacinia; interdum ante
-  //         posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui
-  //         parturient. orem ipsum dolor sit amet, consectetur adipiscing elit.
-  //         Inceptos sociosqu sodales erat, Lorem ipsum dolor sit amet,
-  //         consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
-  //         habitasse. Suspendisse enim molestie duis lacinia; interdum ante
-  //         posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui
-  //         parturient. orem ipsum dolor sit amet, consectetur adipiscing elit.
-  //         Inceptos sociosqu sodales erat, Lorem ipsum dolor sit amet,
-  //         consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
-  //         habitasse. Suspendisse enim molestie duis lacinia; interdum ante
-  //         posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui
-  //         parturient. orem ipsum dolor sit amet, consectetur adipiscing elit.
-  //         Inceptos sociosqu sodales erat, Lorem ipsum dolor sit amet,
-  //         consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
-  //         habitasse. Suspendisse enim molestie duis lacinia; interdum ante
-  //         posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui
-  //         parturient. orem ipsum dolor sit amet, consectetur adipiscing elit.
-  //         Inceptos sociosqu sodales erat, Inceptos sociosqu sodales erat, nam
-  //         est habi
-  //       </p>
-  //     </div>
-  //   </div>
-  // );
 
   return (
     <div>
@@ -377,49 +281,10 @@ const SingleProduct = () => {
       <div className="product-description">
         <h3>Description</h3>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos
-          sociosqu sodales erat, nam est habitasse. Suspendisse enim molestie
-          duis lacinia; interdum ante posuere. Libero aptent curae hac dis
-          vulputate lobortis eleifend dui parturient. orem ipsum dolor sit amet,
-          consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
-          habiorem ipsum dolor sit amet, consectetur adipiscing elit. Inceptos
-          sociosqu sodales erat, nam est habiorem ipsum dolor sit amet,
-          consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
-          habiorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum
-          dolor sit amet, consectetur adipiscing elit. Inceptos sociosqu sodales
-          erat, nam est habitasse. Suspendisse enim molestie duis lacinia;
-          interdum ante posuere. Libero aptent curae hac dis vulputate lobortis
-          eleifend dui parturient. orem ipsum dolor sit amet, consectetur
-          adipiscing elit. Inceptos sociosqu sodales erat, Lorem ipsum dolor sit
-          amet, consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam
-          est habitasse. Suspendisse enim molestie duis lacinia; interdum ante
-          posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui
-          parturient. orem ipsum dolor sit amet, consectetur adipiscing elit.
-          Inceptos sociosqu sodales erat, Lorem ipsum dolor sit amet,
-          consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
-          habitasse. Suspendisse enim molestie duis lacinia; interdum ante
-          posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui
-          parturient. orem ipsum dolor sit amet, consectetur adipiscing elit.
-          Inceptos sociosqu sodales erat, Lorem ipsum dolor sit amet,
-          consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
-          habitasse. Suspendisse enim molestie duis lacinia; interdum ante
-          posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui
-          parturient. orem ipsum dolor sit amet, consectetur adipiscing elit.
-          Inceptos sociosqu sodales erat, Lorem ipsum dolor sit amet,
-          consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
-          habitasse. Suspendisse enim molestie duis lacinia; interdum ante
-          posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui
-          parturient. orem ipsum dolor sit amet, consectetur adipiscing elit.
-          Inceptos sociosqu sodales erat, Lorem ipsum dolor sit amet,
-          consectetur adipiscing elit. Inceptos sociosqu sodales erat, nam est
-          habitasse. Suspendisse enim molestie duis lacinia; interdum ante
-          posuere. Libero aptent curae hac dis vulputate lobortis eleifend dui
-          parturient. orem ipsum dolor sit amet, consectetur adipiscing elit.
-          Inceptos sociosqu sodales erat, Inceptos sociosqu sodales erat, nam
-          est habi
+          {product.descriptionId}
         </p>
       </div>
-      {/* <MerchantList/> */}
+      <MerchantList/>
     </div>
   );
 };
