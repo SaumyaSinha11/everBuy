@@ -56,8 +56,10 @@ const CartPage = () => {
   const syncGuestCart = async (userId) => {
     const cartItems = guestCartItems;
   
-    if (login && userId) {
+    if (login && userId && cartItems) {
       if (cartItems.length > 0) {
+        localStorage.removeItem("guestCart");
+
         console.log("Syncing guest cart to server:", cartItems);
   
         const itemList = cartItems.map((item) => ({
@@ -85,7 +87,6 @@ const CartPage = () => {
           const result = await response.json();
           console.log("Items added to cart successfully:", result);
   
-          localStorage.removeItem("guestCart");
         } catch (error) {
           console.error("Error adding items from localStorage to cart:", error);
         }
