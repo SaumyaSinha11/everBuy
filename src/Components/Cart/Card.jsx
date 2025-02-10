@@ -36,8 +36,17 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
 
   const handleQuantityChange = (increment) => {
     const newQuantity = increment ? item.quantity + 1 : item.quantity - 1;
-    updateQuantity(item.cartId, newQuantity ,item.productId);
+    const email = localStorage.getItem("userEmail");
+  
+    if (email) {
+      // Logged-in user: use cartId
+      updateQuantity(item.cartId, newQuantity, item.productId);
+    } else {
+      // Guest user: use productId only
+      updateQuantity(null, newQuantity, item.productId);
+    }
   };
+  
 
   return (
     <StyledCard key={item.cartId}>
@@ -65,7 +74,7 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
               <Rating
-                value={item.rating}
+                value={item.rating??0}
                 precision={0.5}
                 readOnly
                 sx={{
@@ -92,7 +101,7 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
               </QuantityButton>
               <IconButton
                 color="error"
-                onClick={() => removeItem(item.cartId)}
+                onClick={() => removeItem(item.cartId, item.pid)}
                 sx={{ ml: "auto" }}
               >
                 <FiTrash2 />
